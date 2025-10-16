@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head><title>Delivery Dashboard</title></head>
+<body>
+<h2>Welcome Delivery {{ user.mobile }}</h2>
+<h3>Assigned Bookings</h3>
+<ul>
+{% for booking in bookings %}
+  <li>ID: {{ booking.id }} | Status: {{ booking.status }}
+    <form method="post" action="/booking/delivery/update_status/">
+      {% csrf_token %}
+      <input type="hidden" name="booking_id" value="{{ booking.id }}">
+      <select name="status">
+        <option {% if booking.status=="Start" %}selected{% endif %}>Start</option>
+        <option {% if booking.status=="Reached" %}selected{% endif %}>Reached</option>
+        <option {% if booking.status=="Collected" %}selected{% endif %}>Collected</option>
+        <option {% if booking.status=="Delivered" %}selected{% endif %}>Delivered</option>
+      </select>
+      <button type="submit">Update</button>
+    </form>
+    <button onclick="startChat({{ booking.id }})">Chat</button>
+  </li>
+{% endfor %}
+</ul>
+
+<div id="chatbox" style="border:1px solid #000; width:300px; height:200px; overflow:auto;"></div>
+<input type="text" id="msg">
+<button onclick="sendMsg()">Send</button>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/static/chat.js"></script>
+<script>
+function startChat(booking_id){
+    initChat(booking_id);
+}
+</script>
+</body>
+</html>
